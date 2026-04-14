@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pensamiento Convergente & Divergente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --deep: #111111;
+      --surface: #161616;
+      --border: #222222;
+      --blue: #378ADD;
+      --blue-dim: rgba(55, 138, 221, 0.15);
+      --blue-glow: rgba(55, 138, 221, 0.4);
+      --white: #f0f0f0;
+      --gray: #888888;
+      --gray-dim: rgba(240, 240, 240, 0.07);
+      --orange: #FF6B00;
+      --orange-dim: rgba(255, 107, 0, 0.15);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--blue);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* grid lines */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(55,138,221,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(55,138,221,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    /* radial glow */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(55,138,221,0.08) 0%, transparent 70%);
+    }
+    .hero-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      position: relative; z-index: 1;
+      opacity: 0;
+      animation: fadeDown 0.8s 0.3s forwards;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      position: relative; z-index: 1;
+      opacity: 0;
+      animation: fadeDown 0.9s 0.5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--blue);
+    }
+    .hero-title .word-conv {
+      color: var(--white);
+      opacity: 0.4;
+    }
+    .hero-vs {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1rem, 3vw, 2rem);
+      color: var(--orange);
+      display: block;
+      margin: 0.3rem 0;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--gray);
+      max-width: 540px;
+      margin: 2rem auto 0;
+      position: relative; z-index: 1;
+      opacity: 0;
+      animation: fadeDown 1s 0.8s forwards;
+    }
+    .hero-scroll {
+      margin-top: 4rem;
+      position: relative; z-index: 1;
+      opacity: 0;
+      animation: fadeDown 1s 1.2s forwards;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hero-scroll span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--blue), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── VISUAL METAPHOR ── */
+    #metafora {
+      padding: 6rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .meta-block {
+      flex: 1;
+      min-width: 280px;
+      text-align: center;
+    }
+    .meta-visual {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+    /* Funnel for convergent */
+    .funnel-svg, .explosion-svg { width: 100%; height: 100%; }
+    .meta-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .meta-label.conv { color: var(--gray); }
+    .meta-label.div { color: var(--blue); }
+    .meta-title-sm {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+    }
+    .meta-desc {
+      color: var(--gray);
+      font-size: 0.9rem;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    .meta-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--orange);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .meta-divider::before, .meta-divider::after {
+      content: '';
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--orange), transparent);
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section { padding: 7rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .section-title em { font-style: italic; color: var(--blue); }
+    .section-sub {
+      color: var(--gray);
+      max-width: 560px;
+      margin-bottom: 4rem;
+    }
+
+    /* ── CARDS ── */
+    #conceptos { background: var(--deep); }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .card {
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card.conv {
+      background: var(--gray-dim);
+      border: 1px solid var(--border);
+    }
+    .card.div {
+      background: var(--blue-dim);
+      border: 1px solid rgba(55,138,221,0.25);
+    }
+    .card-icon {
+      width: 56px; height: 56px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 2px;
+      margin-bottom: 1.2rem;
+      display: inline-block;
+    }
+    .card.conv .card-tag { background: var(--gray-dim); color: var(--gray); border: 1px solid var(--border); }
+    .card.div .card-tag { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(55,138,221,0.3); }
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .card p { color: var(--gray); font-size: 0.95rem; }
+    .card ul {
+      margin-top: 1.2rem;
+      list-style: none;
+    }
+    .card ul li {
+      color: var(--gray);
+      font-size: 0.9rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+    .card ul li::before {
+      content: '→';
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+    .card.conv ul li::before { color: var(--gray); }
+    .card.div ul li::before { color: var(--blue); }
+    .card-glow {
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .card.div .card-glow { background: radial-gradient(circle, rgba(55,138,221,0.12), transparent 70%); }
+    .card.conv .card-glow { background: radial-gradient(circle, rgba(240,240,240,0.05), transparent 70%); }
+
+    /* ── COMPARACIÓN ── */
+    #diferencias { background: var(--black); }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .compare-table th {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 1rem 1.5rem;
+      text-align: left;
+    }
+    .compare-table th:nth-child(1) { color: var(--gray); width: 30%; }
+    .compare-table th:nth-child(2) { color: var(--white); opacity: 0.5; width: 35%; }
+    .compare-table th:nth-child(3) { color: var(--blue); width: 35%; }
+    .compare-table td {
+      padding: 1.1rem 1.5rem;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .compare-table td:nth-child(1) {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--gray);
+      letter-spacing: 0.06em;
+    }
+    .compare-table td:nth-child(2) { color: rgba(240,240,240,0.6); }
+    .compare-table td:nth-child(3) { color: var(--blue); }
+    .compare-table tr:hover td { background: var(--gray-dim); }
+    .compare-table tr:hover td:nth-child(3) { background: var(--blue-dim); }
+
+    /* ── EJEMPLOS ── */
+    #ejemplos { background: var(--deep); }
+    .examples-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+    .example-col h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+    .badge.conv { background: var(--gray-dim); color: var(--gray); border: 1px solid var(--border); }
+    .badge.div { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(55,138,221,0.3); }
+    .example-item {
+      padding: 1.2rem 1.5rem;
+      border-left: 2px solid var(--border);
+      margin-bottom: 1rem;
+      transition: border-color 0.3s, background 0.3s;
+      border-radius: 0 4px 4px 0;
+    }
+    .example-item:hover { background: var(--gray-dim); }
+    .example-col.div .example-item { border-left-color: rgba(55,138,221,0.3); }
+    .example-col.div .example-item:hover { background: var(--blue-dim); border-left-color: var(--blue); }
+    .example-item strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+    .example-item p { color: var(--gray); font-size: 0.85rem; }
+
+    /* ── PERSONAL ── */
+    #personal {
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+    #personal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 80% 50%, rgba(55,138,221,0.06), transparent),
+        radial-gradient(ellipse 400px 300px at 10% 80%, rgba(255,107,0,0.04), transparent);
+      pointer-events: none;
+    }
+    .personal-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .personal-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--white);
+      margin-bottom: 2rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    .personal-quote::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--blue), var(--orange));
+    }
+    .personal-text { color: var(--gray); margin-bottom: 2rem; }
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .evidence-card {
+      padding: 1.5rem;
+      background: var(--blue-dim);
+      border: 1px solid rgba(55,138,221,0.2);
+      border-radius: 4px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .evidence-card:hover { border-color: var(--blue); transform: translateY(-3px); }
+    .evidence-card.orange {
+      background: var(--orange-dim);
+      border-color: rgba(255,107,0,0.2);
+    }
+    .evidence-card.orange:hover { border-color: var(--orange); }
+    .ev-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+    .ev-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.3rem;
+    }
+    .evidence-card.orange .ev-title { color: var(--orange); }
+    .ev-desc { font-size: 0.85rem; color: var(--gray); }
+    .score-visual {
+      margin-top: 2rem;
+    }
+    .score-bar-wrap {
+      margin-bottom: 1.2rem;
+    }
+    .score-bar-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .score-bar-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      width: 0;
+      transition: width 1.5s cubic-bezier(.22,1,.36,1);
+    }
+    .score-bar-fill.blue { background: var(--blue); }
+    .score-bar-fill.gray { background: var(--gray); }
+
+    /* ── SÍNTESIS ── */
+    #sintesis { background: var(--deep); }
+    .synthesis-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .synthesis-diagram {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+    .synth-circle {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .synth-c {
+      width: 58%;
+      aspect-ratio: 1;
+      top: 5%; left: 5%;
+      background: rgba(240,240,240,0.04);
+      border: 1px solid rgba(240,240,240,0.15);
+      color: rgba(240,240,240,0.5);
+    }
+    .synth-d {
+      width: 58%;
+      aspect-ratio: 1;
+      bottom: 5%; right: 5%;
+      background: var(--blue-dim);
+      border: 1px solid rgba(55,138,221,0.3);
+      color: var(--blue);
+    }
+    .synth-overlap {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 34%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(240,240,240,0.08), var(--blue-dim));
+      border: 1px solid rgba(55,138,221,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .synth-overlap span:first-child {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--white);
+    }
+    .synth-overlap span:last-child {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .synthesis-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .synthesis-content p { color: var(--gray); margin-bottom: 1rem; }
+    .synthesis-steps {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .step-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--blue);
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(55,138,221,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .step-text { font-size: 0.9rem; color: var(--gray); }
+    .step-text strong { color: var(--white); display: block; margin-bottom: 0.1rem; }
+
+    /* ── CONCLUSIÓN ── */
+    #conclusion {
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+    #conclusion::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--blue), transparent);
+    }
+    .conclusion-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .conclusion-inner blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--white);
+      margin: 2rem 0;
+      position: relative;
+      padding: 0 2rem;
+    }
+    .conclusion-inner blockquote::before,
+    .conclusion-inner blockquote::after {
+      content: '"';
+      font-size: 4rem;
+      color: var(--blue);
+      opacity: 0.3;
+      position: absolute;
+      line-height: 1;
+    }
+    .conclusion-inner blockquote::before { top: -0.5rem; left: 0; }
+    .conclusion-inner blockquote::after { content: '"'; bottom: -1rem; right: 0; }
+    .conclusion-text { color: var(--gray); font-size: 0.95rem; margin-bottom: 1rem; }
+    .conclusion-pills {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .pill {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.2rem;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+    .pill.blue { color: var(--blue); border-color: rgba(55,138,221,0.4); background: var(--blue-dim); }
+    .pill.gray { color: var(--gray); border-color: var(--border); background: var(--gray-dim); }
+    .pill.orange { color: var(--orange); border-color: rgba(255,107,0,0.4); background: var(--orange-dim); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      padding: 3rem 4rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .footer-left p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--gray);
+      line-height: 2;
+    }
+    .footer-left p strong { color: var(--white); font-weight: 700; }
+    .footer-right {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      #metafora { flex-direction: column; gap: 3rem; padding: 4rem 1.5rem; }
+      .meta-divider::before, .meta-divider::after { display: none; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .examples-grid { grid-template-columns: 1fr; }
+      .personal-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .synthesis-layout { grid-template-columns: 1fr; }
+      .compare-table { font-size: 0.8rem; }
+      .compare-table th, .compare-table td { padding: 0.8rem 1rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+      .evidence-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Pensamiento — EMICRESPO</span>
+  <ul class="nav-links">
+    <li><a href="#conceptos">Conceptos</a></li>
+    <li><a href="#diferencias">Diferencias</a></li>
+    <li><a href="#ejemplos">Ejemplos</a></li>
+    <li><a href="#personal">Mi perfil</a></li>
+    <li><a href="#conclusion">Conclusión</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <p class="hero-label">Proyecto personal · Psicología</p>
+  <h1 class="hero-title">
+    <span class="word-conv">Convergente</span>
+    <span class="hero-vs">×</span>
+    <em>Divergente</em>
+  </h1>
+  <p class="hero-sub">Dos formas de pensar, un mismo cerebro. Una exploración de cómo procesamos la realidad, resolvemos problemas y generamos ideas.</p>
+  <div class="hero-scroll">
+    <span>Explorar</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- METÁFORA VISUAL -->
+<div id="metafora">
+  <div class="meta-block reveal-left">
+    <div class="meta-visual">
+      <svg class="funnel-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Entrada: múltiples ideas dispersas -->
+        <circle cx="30" cy="25" r="6" fill="rgba(240,240,240,0.2)" stroke="rgba(240,240,240,0.4)" stroke-width="1"/>
+        <circle cx="80" cy="15" r="6" fill="rgba(240,240,240,0.2)" stroke="rgba(240,240,240,0.4)" stroke-width="1"/>
+        <circle cx="120" cy="20" r="6" fill="rgba(240,240,240,0.2)" stroke="rgba(240,240,240,0.4)" stroke-width="1"/>
+        <circle cx="170" cy="28" r="6" fill="rgba(240,240,240,0.2)" stroke="rgba(240,240,240,0.4)" stroke-width="1"/>
+        <circle cx="50" cy="40" r="5" fill="rgba(240,240,240,0.15)" stroke="rgba(240,240,240,0.3)" stroke-width="1"/>
+        <circle cx="150" cy="38" r="5" fill="rgba(240,240,240,0.15)" stroke="rgba(240,240,240,0.3)" stroke-width="1"/>
+        <!-- Lines converging -->
+        <line x1="30" y1="31" x2="90" y2="85" stroke="rgba(240,240,240,0.15)" stroke-width="1"/>
+        <line x1="80" y1="21" x2="97" y2="85" stroke="rgba(240,240,240,0.2)" stroke-width="1"/>
+        <line x1="120" y1="26" x2="103" y2="85" stroke="rgba(240,240,240,0.2)" stroke-width="1"/>
+        <line x1="170" y1="34" x2="110" y2="85" stroke="rgba(240,240,240,0.15)" stroke-width="1"/>
+        <!-- Funnel body -->
+        <path d="M 30 85 L 90 85 L 100 160 L 110 85 L 170 85" stroke="rgba(240,240,240,0.25)" stroke-width="1.5" fill="none"/>
+        <path d="M 42 110 L 100 160 L 158 110" stroke="rgba(240,240,240,0.15)" stroke-width="1" fill="none"/>
+        <!-- Output dot -->
+        <circle cx="100" cy="170" r="10" fill="rgba(240,240,240,0.1)" stroke="rgba(240,240,240,0.6)" stroke-width="1.5"/>
+        <circle cx="100" cy="170" r="5" fill="rgba(240,240,240,0.4)"/>
+        <!-- Label -->
+        <text x="100" y="195" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="rgba(240,240,240,0.4)" letter-spacing="2">UNA RESPUESTA</text>
+      </svg>
+    </div>
+    <p class="meta-label conv">Pensamiento</p>
+    <h3 class="meta-title-sm">Convergente</h3>
+    <p class="meta-desc">Muchas ideas entran al embudo. Sale <strong style="color:var(--white)">una sola respuesta</strong> correcta.</p>
+  </div>
+
+  <div class="meta-divider reveal">
+    <span>VS</span>
+  </div>
+
+  <div class="meta-block reveal-right">
+    <div class="meta-visual">
+      <svg class="explosion-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Central point -->
+        <circle cx="100" cy="100" r="10" fill="rgba(55,138,221,0.15)" stroke="#378ADD" stroke-width="1.5"/>
+        <circle cx="100" cy="100" r="5" fill="#378ADD" opacity="0.7"/>
+        <!-- Explosion rays -->
+        <line x1="100" y1="90" x2="100" y2="20" stroke="rgba(55,138,221,0.4)" stroke-width="1"/>
+        <line x1="100" y1="110" x2="100" y2="180" stroke="rgba(55,138,221,0.4)" stroke-width="1"/>
+        <line x1="90" y1="100" x2="20" y2="100" stroke="rgba(55,138,221,0.4)" stroke-width="1"/>
+        <line x1="110" y1="100" x2="180" y2="100" stroke="rgba(55,138,221,0.4)" stroke-width="1"/>
+        <line x1="93" y1="93" x2="44" y2="44" stroke="rgba(55,138,221,0.25)" stroke-width="1"/>
+        <line x1="107" y1="93" x2="156" y2="44" stroke="rgba(55,138,221,0.25)" stroke-width="1"/>
+        <line x1="93" y1="107" x2="44" y2="156" stroke="rgba(55,138,221,0.25)" stroke-width="1"/>
+        <line x1="107" y1="107" x2="156" y2="156" stroke="rgba(55,138,221,0.25)" stroke-width="1"/>
+        <!-- Endpoint idea bubbles -->
+        <circle cx="100" cy="16" r="10" fill="rgba(55,138,221,0.15)" stroke="#378ADD" stroke-width="1"/>
+        <circle cx="100" cy="184" r="10" fill="rgba(55,138,221,0.15)" stroke="#378ADD" stroke-width="1"/>
+        <circle cx="16" cy="100" r="10" fill="rgba(55,138,221,0.15)" stroke="#378ADD" stroke-width="1"/>
+        <circle cx="184" cy="100" r="10" fill="rgba(55,138,221,0.15)" stroke="#378ADD" stroke-width="1"/>
+        <circle cx="40" cy="40" r="8" fill="rgba(55,138,221,0.1)" stroke="rgba(55,138,221,0.5)" stroke-width="1"/>
+        <circle cx="160" cy="40" r="8" fill="rgba(55,138,221,0.1)" stroke="rgba(55,138,221,0.5)" stroke-width="1"/>
+        <circle cx="40" cy="160" r="8" fill="rgba(55,138,221,0.1)" stroke="rgba(55,138,221,0.5)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="8" fill="rgba(55,138,221,0.1)" stroke="rgba(55,138,221,0.5)" stroke-width="1"/>
+        <!-- Question mark label -->
+        <text x="100" y="104" text-anchor="middle" font-family="Space Mono, monospace" font-size="8" fill="#378ADD">?</text>
+      </svg>
+    </div>
+    <p class="meta-label div">Pensamiento</p>
+    <h3 class="meta-title-sm" style="color:var(--blue)">Divergente</h3>
+    <p class="meta-desc">Una pregunta detona la mente. Salen <strong style="color:var(--blue)">infinitas posibilidades</strong>.</p>
+  </div>
+</div>
+
+<!-- CONCEPTOS -->
+<section id="conceptos">
+  <div class="container">
+    <p class="section-label reveal">01 — Conceptos</p>
+    <h2 class="section-title reveal">¿Qué es cada <em>uno</em>?</h2>
+    <p class="section-sub reveal">Dos modos cognitivos distintos. Ambos esenciales. Ninguno superior al otro.</p>
+    <div class="cards-grid">
+      <div class="card conv reveal-left">
+        <div class="card-glow"></div>
+        <svg class="card-icon" viewBox="0 0 56 56" fill="none">
+          <rect x="8" y="8" width="40" height="40" rx="2" stroke="rgba(240,240,240,0.2)" stroke-width="1"/>
+          <line x1="14" y1="28" x2="42" y2="28" stroke="rgba(240,240,240,0.5)" stroke-width="1.5"/>
+          <polyline points="34,21 42,28 34,35" stroke="rgba(240,240,240,0.8)" stroke-width="1.5"/>
+        </svg>
+        <span class="card-tag">Tipo A</span>
+        <h3>Pensamiento<br>Convergente</h3>
+        <p>Es la capacidad de encontrar <strong style="color:var(--white)">una sola solución correcta</strong> a un problema bien definido. Opera de manera lógica, analítica y sistemática, reduciendo múltiples posibilidades hasta llegar a la respuesta más precisa.</p>
+        <ul>
+          <li>Analítico y lógico</li>
+          <li>Sigue reglas y criterios establecidos</li>
+          <li>Busca la respuesta correcta</li>
+          <li>Evalúa y descarta opciones</li>
+          <li>Eficiente en problemas estructurados</li>
+        </ul>
+      </div>
+      <div class="card div reveal-right">
+        <div class="card-glow"></div>
+        <svg class="card-icon" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="5" fill="#378ADD" opacity="0.6"/>
+          <circle cx="28" cy="12" r="4" stroke="#378ADD" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <circle cx="28" cy="44" r="4" stroke="#378ADD" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <circle cx="12" cy="28" r="4" stroke="#378ADD" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <circle cx="44" cy="28" r="4" stroke="#378ADD" stroke-width="1.2" fill="none" opacity="0.5"/>
+          <line x1="28" y1="23" x2="28" y2="16" stroke="#378ADD" stroke-width="1" opacity="0.4"/>
+          <line x1="28" y1="33" x2="28" y2="40" stroke="#378ADD" stroke-width="1" opacity="0.4"/>
+          <line x1="23" y1="28" x2="16" y2="28" stroke="#378ADD" stroke-width="1" opacity="0.4"/>
+          <line x1="33" y1="28" x2="40" y2="28" stroke="#378ADD" stroke-width="1" opacity="0.4"/>
+        </svg>
+        <span class="card-tag">Tipo B</span>
+        <h3 style="color:var(--blue)">Pensamiento<br>Divergente</h3>
+        <p>Es la capacidad de generar <strong style="color:var(--blue)">múltiples ideas, respuestas o soluciones creativas</strong> a un mismo estímulo. Rompe patrones, conecta conceptos distantes y explora el espacio de posibilidades sin restricciones.</p>
+        <ul>
+          <li>Creativo y asociativo</li>
+          <li>Genera ideas sin juzgarlas</li>
+          <li>Busca muchas soluciones posibles</li>
+          <li>Conecta conceptos distantes</li>
+          <li>Poderoso ante problemas abiertos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAS -->
+<section id="diferencias">
+  <div class="container">
+    <p class="section-label reveal">02 — Análisis</p>
+    <h2 class="section-title reveal">Las diferencias <em>clave</em></h2>
+    <p class="section-sub reveal">Un contraste directo de cómo opera cada modo de pensamiento.</p>
+    <div class="reveal">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Dimensión</th>
+            <th>Convergente</th>
+            <th>Divergente</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Objetivo</td>
+            <td>Encontrar la única respuesta correcta</td>
+            <td>Generar la mayor cantidad de ideas posibles</td>
+          </tr>
+          <tr>
+            <td>Proceso</td>
+            <td>Lineal, paso a paso, deductivo</td>
+            <td>No lineal, asociativo, exploratorio</td>
+          </tr>
+          <tr>
+            <td>Evaluación</td>
+            <td>Constante — descarta lo incorrecto</td>
+            <td>Suspendida — acepta todo primero</td>
+          </tr>
+          <tr>
+            <td>Ambiente ideal</td>
+            <td>Problemas con solución definida</td>
+            <td>Problemas abiertos, retos creativos</td>
+          </tr>
+          <tr>
+            <td>Herramienta</td>
+            <td>Lógica, análisis, cálculo</td>
+            <td>Intuición, analogías, asociaciones libres</td>
+          </tr>
+          <tr>
+            <td>Resultado</td>
+            <td>Una solución precisa y verificable</td>
+            <td>Un espectro de posibilidades</td>
+          </tr>
+          <tr>
+            <td>Medición</td>
+            <td>Exactitud y velocidad</td>
+            <td>Fluidez, flexibilidad, originalidad</td>
+          </tr>
+          <tr>
+            <td>Contexto típico</td>
+            <td>Matemáticas, medicina diagnóstica, derecho</td>
+            <td>Arte, diseño, emprendimiento, innovación</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- EJEMPLOS -->
+<section id="ejemplos">
+  <div class="container">
+    <p class="section-label reveal">03 — Aplicación</p>
+    <h2 class="section-title reveal">Ejemplos en la <em>vida real</em></h2>
+    <p class="section-sub reveal">Los dos tipos de pensamiento conviven en distintos contextos del día a día.</p>
+    <div class="examples-grid">
+      <div class="example-col conv reveal-left">
+        <h3>Convergente <span class="badge conv">Lógico</span></h3>
+        <div class="example-item">
+          <strong>Matemáticas</strong>
+          <p>Resolver 3x + 7 = 22 tiene una respuesta exacta: x = 5. No hay margen para la interpretación.</p>
+        </div>
+        <div class="example-item">
+          <strong>Diagnóstico médico</strong>
+          <p>El médico analiza síntomas, descarta causas y converge en un diagnóstico específico.</p>
+        </div>
+        <div class="example-item">
+          <strong>Prueba de opción múltiple</strong>
+          <p>De cuatro opciones, solo una es correcta. El pensamiento converge hacia la que cumple todos los criterios.</p>
+        </div>
+        <div class="example-item">
+          <strong>Ajedrez (táctica)</strong>
+          <p>En una posición táctica, hay un movimiento ganador. Calcular esa secuencia exacta es convergente.</p>
+        </div>
+        <div class="example-item">
+          <strong>Programación de algoritmos</strong>
+          <p>Depurar un bug requiere identificar el error exacto en el código, no generar múltiples versiones.</p>
+        </div>
+      </div>
+      <div class="example-col div reveal-right">
+        <h3 style="color:var(--blue)">Divergente <span class="badge div">Creativo</span></h3>
+        <div class="example-item">
+          <strong>Brainstorming de negocio</strong>
+          <p>Ante "¿cómo podemos diferenciarnos?", el pensamiento divergente genera docenas de ángulos sin filtrar.</p>
+        </div>
+        <div class="example-item">
+          <strong>Diseño de producto</strong>
+          <p>Un diseñador no busca una forma "correcta" — explora, itera y combina hasta que algo resuena.</p>
+        </div>
+        <div class="example-item">
+          <strong>Escritura creativa</strong>
+          <p>Ante el mismo personaje, un escritor puede imaginar cien historias distintas, ninguna incorrecta.</p>
+        </div>
+        <div class="example-item">
+          <strong>Emprendimiento</strong>
+          <p>Ver un problema del mercado y pensar 15 modelos de negocio distintos para resolverlo.</p>
+        </div>
+        <div class="example-item">
+          <strong>Innovación con IA</strong>
+          <p>Combinar herramientas de IA de formas inesperadas para crear productos que nadie ha imaginado todavía.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAL -->
+<section id="personal">
+  <div class="container">
+    <p class="section-label reveal">04 — Perfil personal</p>
+    <h2 class="section-title reveal">¿Cuál predomina <em>en mí</em>?</h2>
+    <div class="personal-layout">
+      <div class="reveal-left">
+        <blockquote class="personal-quote">
+          No sigo caminos. Los construyo.
+        </blockquote>
+        <p class="personal-text">Mi forma natural de enfrentar el mundo es divergente. No porque sea incapaz de pensar con lógica —el pensamiento convergente es una herramienta que uso— sino porque mi instinto siempre va hacia la pregunta: <em style="color:var(--white)">"¿y si lo hacemos diferente?"</em></p>
+        <p class="personal-text">Tengo 15 años, vivo en CDMX, estudio prepa, entreno para un medio maratón y uso IA para crear cosas que antes no existían. No por accidente: porque mi cerebro funciona expandiendo posibilidades, no reduciéndolas.</p>
+
+        <div class="score-visual reveal">
+          <div class="score-bar-wrap">
+            <div class="score-bar-label">
+              <span>Pensamiento Divergente</span>
+              <span style="color:var(--blue)">85%</span>
+            </div>
+            <div class="score-bar-track">
+              <div class="score-bar-fill blue" data-width="85"></div>
+            </div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label">
+              <span>Pensamiento Convergente</span>
+              <span style="color:var(--gray)">40%</span>
+            </div>
+            <div class="score-bar-track">
+              <div class="score-bar-fill gray" data-width="40"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <div class="evidence-grid">
+          <div class="evidence-card">
+            <span class="ev-icon">🏃</span>
+            <p class="ev-title">Running: 5K sub-20</p>
+            <p class="ev-desc">Entreno con un plan propio, ajustado semana a semana. La mejora no es lineal: requiere experimentar, adaptar y reimaginar cómo entrenar de forma diferente.</p>
+          </div>
+          <div class="evidence-card">
+            <span class="ev-icon">⚡</span>
+            <p class="ev-title">IA como herramienta creativa</p>
+            <p class="ev-desc">Uso inteligencia artificial no para hacer lo mismo más rápido, sino para crear cosas que antes eran imposibles. La IA amplifica el pensamiento divergente.</p>
+          </div>
+          <div class="evidence-card orange">
+            <span class="ev-icon">🎯</span>
+            <p class="ev-title">Medio Maratón</p>
+            <p class="ev-desc">Meses de preparación con un plan que ajusto constantemente. La carrera de fondo exige repensar el entrenamiento, no solo repetirlo.</p>
+          </div>
+          <div class="evidence-card orange">
+            <span class="ev-icon">📚</span>
+            <p class="ev-title">Prepa + autodidacta</p>
+            <p class="ev-desc">Aprendo lo que me piden en la escuela y, en paralelo, aprendo lo que me apasiona: tecnología, negocios, diseño. Dos currículas al mismo tiempo.</p>
+          </div>
+        </div>
+        <div class="evidence-card" style="margin-top:1rem; background: var(--gray-dim); border-color: var(--border);">
+          <p class="ev-title" style="color:var(--gray)">Contexto</p>
+          <p class="ev-desc">Estudiante de preparatoria en CDMX. No espero terminar la escuela para empezar —ya empecé. Eso es la mentalidad divergente en su expresión más pura: actuar antes de tener todo resuelto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SÍNTESIS -->
+<section id="sintesis">
+  <div class="container">
+    <p class="section-label reveal">05 — Integración</p>
+    <h2 class="section-title reveal">¿Se pueden <em>combinar</em>?</h2>
+    <p class="section-sub reveal">La mente más poderosa no elige uno: los usa en el momento correcto.</p>
+    <div class="synthesis-layout">
+      <div class="synthesis-diagram reveal-left">
+        <div class="synth-circle synth-c" style="padding: 1rem;">
+          Convergente<br>Lógica<br>Precisión
+        </div>
+        <div class="synth-circle synth-d" style="padding: 1rem;">
+          Divergente<br>Creatividad<br>Exploración
+        </div>
+        <div class="synth-overlap">
+          <span>Genius</span>
+          <span>Zone</span>
+        </div>
+      </div>
+      <div class="synthesis-content reveal-right">
+        <h3>La zona de <em style="color:var(--blue);font-style:italic">genialidad</em></h3>
+        <p>El error más común es pensar que uno excluye al otro. En realidad, los mejores solucionadores de problemas —empresarios, científicos, artistas— dominan ambos y saben <strong style="color:var(--white)">cuándo activar cada uno</strong>.</p>
+        <p>El proceso óptimo de resolución de problemas no es ni puro convergente ni puro divergente: es una <strong style="color:var(--white)">alternancia inteligente</strong>.</p>
+        <div class="synthesis-steps">
+          <div class="step">
+            <span class="step-num">1</span>
+            <div class="step-text">
+              <strong>Diverge primero</strong>
+              Abre el espacio: genera ideas sin filtrar, explora el problema desde múltiples ángulos, no te censures.
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div class="step-text">
+              <strong>Converge después</strong>
+              Evalúa con criterio: aplica lógica, análisis y restricciones reales para identificar la mejor opción.
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">3</span>
+            <div class="step-text">
+              <strong>Itera en ciclos</strong>
+              Ejecuta, aprende, vuelve a divergir. El ciclo no termina —se perfecciona.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSIÓN -->
+<section id="conclusion">
+  <div class="container">
+    <div class="conclusion-inner">
+      <p class="section-label reveal" style="text-align:center">06 — Reflexión final</p>
+      <h2 class="section-title reveal" style="text-align:center">Conclusión</h2>
+      <blockquote class="reveal">
+        El pensamiento convergente te dice cómo llegar al destino. El divergente te ayuda a imaginar destinos que nadie más ve.
+      </blockquote>
+      <p class="conclusion-text reveal">Aprender sobre estos dos tipos de pensamiento no es solo un ejercicio académico: es un mapa de cómo funciona mi mente. Reconocer que tengo una tendencia divergente no significa que ignore la lógica —significa que entiendo mi fortaleza natural y puedo potenciarla conscientemente.</p>
+      <p class="conclusion-text reveal">Los negocios que construyo, los kilómetros que entreno, las herramientas que aprendo: todo es una expresión de pensamiento divergente puesto en acción. Y cuando llega el momento de ejecutar, tomar decisiones concretas o analizar resultados, ahí es cuando el pensamiento convergente entra al juego.</p>
+      <p class="conclusion-text reveal">La verdadera inteligencia no es elegir uno. Es saber exactamente cuándo y cómo usar cada modo. Eso es lo que me propongo desarrollar.</p>
+      <div class="conclusion-pills reveal">
+        <span class="pill blue">Pensamiento Divergente</span>
+        <span class="pill gray">Pensamiento Convergente</span>
+        <span class="pill orange">Síntesis creativa</span>
+        <span class="pill blue">Emprendimiento</span>
+        <span class="pill gray">Lógica aplicada</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <p><strong>Alumno:</strong> Emiliano Crespo</p>
+    <p><strong>Materia:</strong> Estrategias del Pensamiento</p>
+    <p><strong>Fecha:</strong> Abril 2026</p>
+    <p><strong>Proyecto:</strong> Pensamiento Convergente y Divergente</p>
+  </div>
+  <div class="footer-right">
+    Hecho con pensamiento divergente.
+  </div>
+</footer>
+
+<script>
+  // ── INTERSECTION OBSERVER ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Animate bars when visible
+        const bars = entry.target.querySelectorAll('.score-bar-fill[data-width]');
+        bars.forEach(bar => {
+          const width = bar.dataset.width;
+          setTimeout(() => { bar.style.width = width + '%'; }, 200);
+        });
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    observer.observe(el);
+  });
+
+  // ── STAGGERED DELAYS ──
+  document.querySelectorAll('.cards-grid .card, .examples-grid .example-col, .evidence-grid .evidence-card, .synthesis-steps .step').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+  });
+
+  // ── NAV ACTIVE STATE ──
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.style.color = link.getAttribute('href') === '#' + id
+            ? 'var(--white)'
+            : '';
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => navObserver.observe(s));
+
+  // ── TABLE ROW REVEAL ──
+  document.querySelectorAll('.compare-table tr').forEach((row, i) => {
+    row.style.opacity = '0';
+    row.style.transform = 'translateX(-10px)';
+    row.style.transition = `opacity 0.4s ${i * 0.06}s, transform 0.4s ${i * 0.06}s`;
+  });
+  const tableObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('tr').forEach(row => {
+          row.style.opacity = '1';
+          row.style.transform = 'translateX(0)';
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  const table = document.querySelector('.compare-table');
+  if (table) tableObserver.observe(table);
+</script>
+</body>
+</html>
