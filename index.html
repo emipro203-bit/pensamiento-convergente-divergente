@@ -762,19 +762,93 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
+      /* NAV */
+      nav { padding: 1rem 1.2rem; }
       .nav-links { display: none; }
-      section { padding: 5rem 1.5rem; }
-      #metafora { flex-direction: column; gap: 3rem; padding: 4rem 1.5rem; }
-      .meta-divider::before, .meta-divider::after { display: none; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .examples-grid { grid-template-columns: 1fr; }
-      .personal-layout { grid-template-columns: 1fr; gap: 3rem; }
-      .synthesis-layout { grid-template-columns: 1fr; }
-      .compare-table { font-size: 0.8rem; }
-      .compare-table th, .compare-table td { padding: 0.8rem 1rem; }
-      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
-      .evidence-grid { grid-template-columns: 1fr; }
+      .nav-logo { font-size: 0.6rem; letter-spacing: 0.06em; }
+
+      /* HERO */
+      #hero { padding: 6.5rem 1.5rem 3rem; min-height: 100svh; }
+      .hero-sub { font-size: 0.95rem; margin-top: 1.2rem; }
+      .hero-author { font-size: clamp(1.1rem, 5vw, 1.5rem); margin-top: 1.2rem; }
+      .hero-scroll { margin-top: 2.5rem; }
+      .scroll-line { height: 40px; }
+
+      /* METÁFORA */
+      #metafora { flex-direction: column; gap: 2rem; padding: 3rem 1.5rem; }
+      .meta-visual { width: 140px; height: 140px; }
+      .meta-divider {
+        flex-direction: row;
+        gap: 1rem;
+      }
+      .meta-divider::before, .meta-divider::after {
+        width: 50px; height: 1px;
+        background: linear-gradient(to right, transparent, var(--orange), transparent);
+      }
+      .meta-title-sm { font-size: 1.3rem; }
+      .meta-desc { font-size: 0.85rem; }
+
+      /* SECTIONS */
+      section { padding: 4rem 1.2rem; }
+      .section-title { font-size: clamp(1.8rem, 6vw, 2.5rem); margin-bottom: 1rem; }
+      .section-sub { margin-bottom: 2.5rem; font-size: 0.9rem; }
+
+      /* CARDS */
+      .cards-grid { grid-template-columns: 1fr; gap: 1px; }
+      .card { padding: 1.8rem 1.4rem; }
+      .card h3 { font-size: 1.5rem; }
+
+      /* TABLE — scrollable horizontal */
+      .table-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 4px; }
+      .compare-table { min-width: 560px; font-size: 0.78rem; }
+      .compare-table th { font-size: 0.6rem; padding: 0.8rem 1rem; white-space: nowrap; }
+      .compare-table td { padding: 0.9rem 1rem; font-size: 0.8rem; }
+      .compare-table td:nth-child(1) { font-size: 0.65rem; white-space: nowrap; }
+
+      /* EXAMPLES */
+      .examples-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .example-item { padding: 1rem 1.2rem; }
+      .example-col h3 { font-size: 1.2rem; }
+
+      /* PERSONAL */
+      .personal-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .personal-quote { font-size: 1.35rem; padding-left: 1.1rem; }
+      .personal-text { font-size: 0.9rem; }
+      .evidence-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+      .evidence-card { padding: 1.2rem; }
+      .score-bar-label { font-size: 0.6rem; }
+
+      /* SYNTHESIS */
+      .synthesis-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .synthesis-diagram { max-width: 240px; margin-bottom: 0; }
+      .synth-circle { font-size: 0.55rem; }
+      .synth-overlap span:first-child { font-size: 0.85rem; }
+      .synth-overlap span:last-child { font-size: 0.45rem; }
+      .synthesis-content h3 { font-size: 1.5rem; }
+
+      /* CONCLUSION */
+      .conclusion-inner blockquote {
+        padding: 0 1.2rem;
+        font-size: clamp(1.15rem, 4.5vw, 1.6rem);
+        margin: 1.5rem 0;
+      }
+      .conclusion-inner blockquote::before { font-size: 2.8rem; top: -0.2rem; left: 0; }
+      .conclusion-inner blockquote::after { font-size: 2.8rem; bottom: -0.6rem; right: 0; }
+      .conclusion-text { font-size: 0.88rem; }
+      .conclusion-pills { gap: 0.5rem; }
+      .pill { font-size: 0.6rem; padding: 0.4rem 0.9rem; }
+
+      /* FOOTER */
+      footer { padding: 2rem 1.2rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .footer-left p { font-size: 0.65rem; line-height: 1.9; }
+      .footer-right { font-size: 0.6rem; }
+    }
+
+    /* Muy pequeño (iPhone SE, etc.) */
+    @media (max-width: 375px) {
+      .hero-title { font-size: 2.6rem; }
+      .card { padding: 1.5rem 1.2rem; }
+      .compare-table { min-width: 480px; }
     }
   </style>
 </head>
@@ -938,7 +1012,7 @@
     <p class="section-label reveal">02 — Análisis</p>
     <h2 class="section-title reveal">Las diferencias <em>clave</em></h2>
     <p class="section-sub reveal">Un contraste directo de cómo opera cada modo de pensamiento.</p>
-    <div class="reveal">
+    <div class="reveal table-scroll-wrap">
       <table class="compare-table">
         <thead>
           <tr>
