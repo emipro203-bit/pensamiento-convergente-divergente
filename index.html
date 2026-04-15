@@ -173,6 +173,23 @@
       opacity: 0;
       animation: fadeDown 1s 0.8s forwards;
     }
+    .hero-author {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(240,240,240,0.55);
+      margin-top: 2rem;
+      letter-spacing: 0.02em;
+      position: relative; z-index: 1;
+      opacity: 0;
+      animation: fadeDown 1s 1s forwards;
+    }
+    .hero-author::before {
+      content: '— ';
+      color: var(--blue);
+      font-style: normal;
+    }
     .hero-scroll {
       margin-top: 4rem;
       position: relative; z-index: 1;
@@ -777,13 +794,14 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
-  <p class="hero-label">Proyecto personal · Psicología</p>
+  <p class="hero-label">Proyecto personal · Estrategias del Pensamiento</p>
   <h1 class="hero-title">
     <span class="word-conv">Convergente</span>
     <span class="hero-vs">×</span>
     <em>Divergente</em>
   </h1>
   <p class="hero-sub">Dos formas de pensar, un mismo cerebro. Una exploración de cómo procesamos la realidad, resolvemos problemas y generamos ideas.</p>
+  <p class="hero-author">Emiliano Crespo</p>
   <div class="hero-scroll">
     <span>Explorar</span>
     <div class="scroll-line"></div>
